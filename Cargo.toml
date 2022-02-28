@@ -1,15 +1,17 @@
 [package]
-name = "near-smart-contract-rust-template"
+name = "guess_number"
 version = "0.1.0"
 edition = "2021"
-authors = ["Jacob Lindahl <jacob@near.foundation>"]
+authors = ["kamau kenn  <jacob@near.foundation>"]
 
 [dependencies]
-near-sdk = "4.0.0-pre.7"
-near-contract-standards = "4.0.0-pre.7"
+near-sdk = "3.1.0"
+rand = "0.7.0"
+# "4.0.0-pre.7"
+# near-contract-standards = "4.0.0-pre.7"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib","rlib"]
 
 [profile.release]
 codegen-units = 1
