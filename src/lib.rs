@@ -1,7 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{env, near_bindgen};
-// use rand;
-use rand::Rng;
 near_sdk::setup_alloc!();
 
 
@@ -39,9 +37,17 @@ impl GuessNumber {
     /// near call guess.YOU.testnet guess --accountId donation.YOU.testnet
     /// ```
     pub fn generate(&mut self) {
-        self.val = rand::thread_rng().gen_range(0, 100);
+        
+    ///
+    /// i could use use rand::Rng;
+    /// then do rand::thread_rng().gen_range(0..100)
+    /// but it generate an error ServerTransactionError: {"index":0,"kind":{"ExecutionError":"Smart contract panicked: panicked at 'could not initialize thread_rng: getrandom: this target is not supported' 
+    /// as such i have created a poor mans random  number generator
+    /// 
+        self.val = get_random_number()
     }
 
+    
 
     pub fn guess(&mut self, input: i8 ) {
         // self.val = rand::thread_rng().gen_range(0, 100);
@@ -69,7 +75,17 @@ impl GuessNumber {
     }
 }
 
-
+// unlike the struct's functions above, this function cannot use attributes #[derive(…)] or #[near_bindgen]
+// any attempts will throw helpful warnings upon 'cargo build'
+// while this function cannot be invoked directly on the blockchain, it can be called from an invoked function
+fn get_random_number() -> i8 {
+    let num1 = vec![2, 3];
+    let address1 = &num1 as *const Vec<i32>;
+    let number1 = address1 as i32;
+    let first = number1.to_string().chars().rev().nth(2).unwrap();
+      let my_rand = first.to_string().parse::<i8>().unwrap();
+      return my_rand;
+}
 
 
 // use the attribute below for unit tests

@@ -6,6 +6,7 @@ the user should guessthe number when guessed right the number resets to 0 untill
 
 The contract contains tests.
 
+
 # Required Software
 
 - Rust 1.58 + cargo
