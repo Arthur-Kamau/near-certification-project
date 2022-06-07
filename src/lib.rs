@@ -7,7 +7,7 @@ near_sdk::setup_alloc!();
 #[derive(Default, BorshDeserialize, BorshSerialize)]
 pub struct GuessNumber {
     // See more data types at https://doc.rust-lang.org/book/ch03-02-data-types.html
-    val: i8, // i8 is signed. unsigned integers are also available: u8, u16, u32, u64, u128
+    val: u8, // i8 is signed. unsigned integers are also available: u8, u16, u32, u64, u128
 }
 
 #[near_bindgen]
@@ -23,7 +23,7 @@ impl GuessNumber {
     /// ```bash
     /// near view guess.YOU.testnet get_num
     /// ```
-    pub fn get_num(&self) -> i8 {
+    pub fn get_num(&self) -> u8 {
         return self.val;
     }
 
@@ -38,18 +38,13 @@ impl GuessNumber {
     /// ```
     pub fn generate(&mut self) {
         
-    ///
-    /// i could use use rand::Rng;
-    /// then do rand::thread_rng().gen_range(0..100)
-    /// but it generate an error ServerTransactionError: {"index":0,"kind":{"ExecutionError":"Smart contract panicked: panicked at 'could not initialize thread_rng: getrandom: this target is not supported' 
-    /// as such i have created a poor mans random  number generator
-    /// 
-        self.val = get_random_number()
-    }
+       let res=  env::random_seed();
+        self.val = res[0];
+          }
 
     
 
-    pub fn guess(&mut self, input: i8 ) {
+    pub fn guess(&mut self, input: u8 ) {
         // self.val = rand::thread_rng().gen_range(0, 100);
       if input> self.val{
         env::log(b"Guess is too big");
@@ -58,7 +53,7 @@ impl GuessNumber {
       }else if input== self.val{
         env::log(b"Guessed right reset to 0");
         self.val =0;
-        
+      
       }else{
         env::log(b"woopsss invalid");
       }
@@ -73,18 +68,6 @@ impl GuessNumber {
         // Another way to log is to cast a string into bytes, hence "b" below:
         env::log(b"Reset guess to zero");
     }
-}
-
-// unlike the struct's functions above, this function cannot use attributes #[derive(…)] or #[near_bindgen]
-// any attempts will throw helpful warnings upon 'cargo build'
-// while this function cannot be invoked directly on the blockchain, it can be called from an invoked function
-fn get_random_number() -> i8 {
-    let num1 = vec![2, 3];
-    let address1 = &num1 as *const Vec<i32>;
-    let number1 = address1 as i32;
-    let first = number1.to_string().chars().rev().nth(2).unwrap();
-      let my_rand = first.to_string().parse::<i8>().unwrap();
-      return my_rand;
 }
 
 
